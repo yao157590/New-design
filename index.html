@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio - Work Section</title>
+    <title>My Portfolio - Work Section with Animation</title>
     <style>
         /* --- CSS VARIABLES & FONTS --- */
         :root {
@@ -16,11 +16,15 @@
             --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
-        /* --- BASIC RESET --- */
+        /* --- BASIC RESET & SMOOTH SCROLL --- */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
@@ -29,6 +33,7 @@
             color: var(--text-main);
             line-height: 1.5;
             padding: 40px 20px;
+            overflow-x: hidden;
         }
 
         /* --- WORK SECTION CONTAINER --- */
@@ -36,13 +41,26 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 80px 0;
+            position: relative;
         }
 
-        /* Section Header Styling */
-        .section-header {
-            margin-bottom: 60px;
+        /* --- ANIMATED HEADER & DINOSAUR --- */
+        .section-header-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
             border-bottom: 2px solid var(--text-main);
-            padding-bottom: 20px;
+            padding-bottom: 30px;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .section-header-wrapper {
+                flex-direction: row;
+                align-items: flex-end;
+            }
         }
 
         .section-header h2 {
@@ -57,6 +75,46 @@
             color: var(--text-muted);
         }
 
+        /* The Dinosaur Animation Container */
+        .dino-animation-container {
+            width: 120px;
+            height: 120px;
+            margin-top: 20px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        @media (min-width: 768px) {
+            .dino-animation-container {
+                margin-top: 0;
+                margin-bottom: -10px;
+            }
+        }
+
+        /* The Dino SVG Styling & Keyframes */
+        .dino-svg {
+            width: 100%;
+            height: 100%;
+            transform-origin: bottom center;
+            animation: dino-bounce 2s ease-in-out infinite;
+        }
+
+        .dino-tail {
+            transform-origin: 30px 75px;
+            animation: tail-wag 1.5s ease-in-out infinite alternate;
+        }
+
+        /* Playful Dino Animations */
+        @keyframes dino-bounce {
+            0%, 100% { transform: translateY(0) scaleY(1); }
+            50% { transform: translateY(-12px) scaleY(1.02); }
+        }
+
+        @keyframes tail-wag {
+            0% { transform: rotate(-5deg); }
+            100% { transform: rotate(10deg); }
+        }
+
         /* --- PORTFOLIO GRID --- */
         .portfolio-grid {
             display: grid;
@@ -64,79 +122,93 @@
             gap: 40px;
         }
 
-        /* Desktop Layout: 2 Columns */
         @media (min-width: 768px) {
             .portfolio-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 50px 40px;
+                gap: 60px 40px;
             }
         }
 
-        /* --- PORTFOLIO ITEM / CARD --- */
+        /* --- PORTFOLIO ITEM CARD --- */
         .portfolio-item {
             display: flex;
             flex-direction: column;
-            background-color: var(--bg-color);
             text-decoration: none;
             color: inherit;
-            group: inherit;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fade-in-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* Image Frame Container */
+        /* Staggered load animation for the cards */
+        .portfolio-item:nth-child(1) { animation-delay: 0.1s; }
+        .portfolio-item:nth-child(2) { animation-delay: 0.25s; }
+        .portfolio-item:nth-child(3) { animation-delay: 0.4s; }
+        .portfolio-item:nth-child(4) { animation-delay: 0.55s; }
+
+        @keyframes fade-in-up {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Image Wrapper with Scale & Lift Animation */
         .item-image-wrapper {
             width: 100%;
             aspect-ratio: 16 / 10;
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
+                        box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Placeholder graphic styles (Replace with actual images) */
         .item-image-wrapper img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Hover Interaction Effects */
+        /* Hover States matching Ollivere's premium feel */
         .portfolio-item:hover .item-image-wrapper {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.05);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+            border-color: #d1d1d6;
         }
 
         .portfolio-item:hover .item-image-wrapper img {
-            transform: scale(1.03);
+            transform: scale(1.04);
         }
 
-        /* Category/Tags Layout */
+        /* Tags Layout */
         .item-tags {
             font-size: 0.75rem;
             text-transform: uppercase;
             font-weight: 700;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.12em;
             color: var(--text-muted);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
-        /* Title / Description Text */
+        /* Description Styling */
         .item-description {
             font-size: 1.25rem;
             font-weight: 600;
             letter-spacing: -0.01em;
-            line-height: 1.4;
-            margin-bottom: 15px;
+            line-height: 1.45;
+            margin-bottom: 16px;
             color: var(--text-main);
             flex-grow: 1;
         }
 
-        /* Minimal CTA Link Style */
+        /* CTA Underline Animation */
         .item-cta {
             display: inline-flex;
             align-items: center;
@@ -144,14 +216,25 @@
             font-weight: 700;
             color: var(--accent-color);
             text-decoration: none;
-            border-bottom: 2px solid var(--accent-color);
+            position: relative;
             width: max-content;
-            padding-bottom: 2px;
-            transition: opacity 0.2s ease;
+            padding-bottom: 4px;
         }
 
-        .portfolio-item:hover .item-cta {
-            opacity: 0.7;
+        .item-cta::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: transform 0.3s ease;
+            transform-origin: right;
+        }
+
+        .portfolio-item:hover .item-cta::after {
+            transform: scaleX(0);
         }
     </style>
 </head>
@@ -159,9 +242,21 @@
 
     <section id="work-section">
         
-        <div class="section-header">
-            <h2>Here are a few things I've done recently</h2>
-            <p>Creative Direction &bull; UX/UI Design &bull; Web Development &bull; Branding</p>
+        <div class="section-header-wrapper">
+            <div class="section-header">
+                <h2>Here are a few things I've done recently</h2>
+                <p>Creative Direction &bull; UX/UI Design &bull; Web Development &bull; Branding</p>
+            </div>
+            
+            <div class="dino-animation-container" title="Rawr!">
+                <svg class="dino-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path class="dino-tail" d="M35 75C25 75 15 65 10 55C8 51 12 48 15 51C20 56 28 65 37 68" stroke="#111111" stroke-width="4" stroke-linecap="round"/>
+                    <path d="M40 85C55 85 65 80 65 60V40C65 30 55 20 45 20H35C30 20 25 25 25 30C25 35 30 38 35 38H45V55C45 68 35 75 35 85" stroke="#111111" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M42 85V92M58 83V92" stroke="#111111" stroke-width="4" stroke-linecap="round"/>
+                    <circle cx="37" cy="28" r="3" fill="#111111"/>
+                    <path d="M55 20L58 16L61 20M65 30L69 28L65 32" stroke="#111111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
         </div>
 
         <div class="portfolio-grid">
